@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: live-chat-backend
+    env: node
+    plan: free
+    buildCommand: cd backend && npm install && npx prisma generate
+    startCommand: cd backend && npx tsx src/index.ts
+    envVars:
+      - key: DATABASE_URL
+        value: file:./dev.db
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: PORT
+        value: 3001
+      - key: UPLOAD_DIR
+        value: ./uploads
+      - key: MAX_FILE_SIZE
+        value: 104857600
+      - key: CORS_ORIGIN
+        value: "*"
