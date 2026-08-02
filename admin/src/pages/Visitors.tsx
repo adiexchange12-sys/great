@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Users, Search } from 'lucide-react'
+import { Search } from 'lucide-react'
 
 interface Visitor {
   id: string

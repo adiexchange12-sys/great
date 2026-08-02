@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Plus, Copy, ExternalLink, Trash2 } from 'lucide-react'
+import { Plus, Copy } from 'lucide-react'
 
 interface ChatRoom {
   id: string
@@ -11,6 +11,7 @@ interface ChatRoom {
   createdAt: string
   _count?: {
     chats: number
+    messages: number
   }
 }
 

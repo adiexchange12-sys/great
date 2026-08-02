@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { UserPlus, Search } from 'lucide-react'
+import { UserPlus } from 'lucide-react'
 
 interface Agent {
   id: string
