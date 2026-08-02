@@ -40,7 +40,6 @@ export default function Chat() {
   const [chat, setChat] = useState<Chat | null>(null)
   const [messages, setMessages] = useState<Message[]>([])
   const [inputMessage, setInputMessage] = useState('')
-  const [searchQuery, setSearchQuery] = useState('')
   const [showEmoji, setShowEmoji] = useState(false)
   const [isRecording, setIsRecording] = useState(false)
   const [isConnected, setIsConnected] = useState(false)
@@ -55,7 +54,6 @@ export default function Chat() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
-  const typingTimeoutRef = useRef<NodeJS.Timeout>()
   const localAudioRef = useRef<HTMLAudioElement>(null)
   const remoteAudioRef = useRef<HTMLAudioElement>(null)
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null)
@@ -336,26 +334,31 @@ export default function Chat() {
       
       if (data.url) {
         const fullUrl = data.url.startsWith('http') ? data.url : `${API_URL}${data.url}`
-        setMessages(prev => prev.map(msg => 
-          msg.id === tempId 
-            ? { ...msg, content: fullUrl, messageType: data.messageType }
-            : msg
-        }))
-        
-        console.log('Emitting visitor:send-message with image')
-        socketRef.current?.emit('visitor:send-message', {
-          chatId: chat.chatId,
-          content: fullUrl,
-          messageType: data.messageType
+        setMessages((prev) => {
+          return prev.map((msg) => {
+            if (msg.id === tempId) {
+              return { ...msg, content: fullUrl, messageType: data.messageType }
+            }
+            return msg
+          })
         })
+
+        console.log('Emitting visitor:send-message with image')
+        if (socketRef.current) {
+          socketRef.current.emit('visitor:send-message', {
+            chatId: chat.chatId,
+            content: fullUrl,
+            messageType: data.messageType
+          })
+        }
         console.log('Image message emitted')
       } else {
         console.log('No url in response')
-        setMessages(prev => prev.filter(msg => msg.id !== tempId))
+        setMessages((prev) => prev.filter((msg) => msg.id !== tempId))
       }
     } catch (error) {
       console.error('Failed to upload file:', error)
-      setMessages(prev => prev.filter(msg => msg.id !== tempId))
+      setMessages((prev) => prev.filter((msg) => msg.id !== tempId))
     }
   }
 
