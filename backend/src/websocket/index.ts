@@ -100,7 +100,7 @@ export function setupWebSocket(server: any) {
     })
     
     socket.on('agent:leave-chat', (chatId: string) => {
-      socket.leave(`chat:${chat.id}`)
+      socket.leave(`chat:${chatId}`)
     })
     
     socket.on('agent:send-message', async (data: any) => {
@@ -226,19 +226,19 @@ export function setupWebSocket(server: any) {
     })
     
     socket.on('agent:typing', (chatId: string) => {
-      socket.to(`chat:${chat.id}`).emit('typing:agent', { chatId, isTyping: true })
+      socket.to(`chat:${chatId}`).emit('typing:agent', { chatId, isTyping: true })
     })
     
     socket.on('agent:stop-typing', (chatId: string) => {
-      socket.to(`chat:${chat.id}`).emit('typing:agent', { chatId, isTyping: false })
+      socket.to(`chat:${chatId}`).emit('typing:agent', { chatId, isTyping: false })
     })
     
     socket.on('visitor:typing', (chatId: string) => {
-      socket.to(`chat:${chat.id}`).emit('typing:visitor', { chatId, isTyping: true })
+      socket.to(`chat:${chatId}`).emit('typing:visitor', { chatId, isTyping: true })
     })
     
     socket.on('visitor:stop-typing', (chatId: string) => {
-      socket.to(`chat:${chat.id}`).emit('typing:visitor', { chatId, isTyping: false })
+      socket.to(`chat:${chatId}`).emit('typing:visitor', { chatId, isTyping: false })
     })
     
     socket.on('call:offer', async (data: any) => {

@@ -4,7 +4,6 @@ import { fileURLToPath } from 'url'
 import fs from 'fs'
 import { config } from '../config/env.js'
 import { nanoid } from 'nanoid'
-import mime from 'mime-types'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 

@@ -57,10 +57,10 @@ model Chat {
   updatedAt   DateTime  @updatedAt
   
   agentId     String?
-  visitorId   String
+  visitorId   String?
   
   agent       Agent?     @relation(fields: [agentId], references: [id])
-  visitor     Visitor    @relation(fields: [visitorId], references: [id])
+  visitor     Visitor?   @relation(fields: [visitorId], references: [id])
   messages    Message[]
   
   @@map("chats")

@@ -7,8 +7,7 @@ const router = Router()
 
 const createChatRoomSchema = z.object({
   slug: z.string().min(1).max(50).regex(/^[a-z0-9-]+$/),
-  name: z.string().min(1).max(100),
-  description: z.string().optional()
+  subject: z.string().min(1).max(100).optional()
 })
 
 router.get('/', authMiddleware, async (req: AuthRequest, res: Response) => {
@@ -19,11 +18,12 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response) => {
       },
       select: {
         id: true,
+        chatId: true,
         slug: true,
-        name: true,
-        description: true,
-        isActive: true,
+        subject: true,
+        status: true,
         createdAt: true,
+        updatedAt: true,
         _count: {
           select: { messages: true }
         }
@@ -39,7 +39,7 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response) => {
 
 router.post('/', authMiddleware, requireRole('admin', 'super_admin'), async (req: AuthRequest, res: Response) => {
   try {
-    const { slug, name, description } = createChatRoomSchema.parse(req.body)
+    const { slug, subject } = createChatRoomSchema.parse(req.body)
     
     const existingRoom = await prisma.chat.findFirst({
       where: { slug }
@@ -53,17 +53,17 @@ router.post('/', authMiddleware, requireRole('admin', 'super_admin'), async (req
       data: {
         chatId: `room_${Date.now()}`,
         slug,
-        name,
-        description,
+        subject,
         status: 'open'
       },
       select: {
         id: true,
+        chatId: true,
         slug: true,
-        name: true,
-        description: true,
-        isActive: true,
-        createdAt: true
+        subject: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true
       }
     })
     

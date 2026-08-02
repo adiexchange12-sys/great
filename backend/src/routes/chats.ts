@@ -214,8 +214,9 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response) => {
 
 router.get('/:chatId', authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
+    const chatId = Array.isArray(req.params.chatId) ? req.params.chatId[0] : req.params.chatId
     const chat = await prisma.chat.findUnique({
-      where: { chatId: req.params.chatId },
+      where: { chatId },
       include: {
         visitor: {
           select: {
@@ -252,8 +253,9 @@ router.get('/:chatId', authMiddleware, async (req: AuthRequest, res: Response) =
 
 router.post('/:chatId/close', authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
+    const chatId = Array.isArray(req.params.chatId) ? req.params.chatId[0] : req.params.chatId
     const chat = await prisma.chat.update({
-      where: { chatId: req.params.chatId },
+      where: { chatId },
       data: {
         status: 'closed',
         closedAt: new Date(),

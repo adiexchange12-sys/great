@@ -61,9 +61,10 @@ router.get('/chat/:chatId', authMiddleware, async (req: AuthRequest, res: Respon
     const pageNum = parseInt(page)
     const limitNum = parseInt(limit)
     const skip = (pageNum - 1) * limitNum
+    const chatId = Array.isArray(req.params.chatId) ? req.params.chatId[0] : req.params.chatId
     
     const chat = await prisma.chat.findUnique({
-      where: { chatId: req.params.chatId }
+      where: { chatId }
     })
     
     if (!chat) {
@@ -100,8 +101,9 @@ router.get('/chat/:chatId', authMiddleware, async (req: AuthRequest, res: Respon
 
 router.patch('/:messageId/read', authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
+    const messageId = Array.isArray(req.params.messageId) ? req.params.messageId[0] : req.params.messageId
     const message = await prisma.message.update({
-      where: { id: req.params.messageId },
+      where: { id: messageId },
       data: { isRead: true }
     })
     
