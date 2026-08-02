@@ -1,0 +1,126 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Agent {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  password     String
+  name         String
+  role         String   @default("agent")
+  isActive     Boolean  @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime  @updatedAt
+  
+  chats        Chat[]
+  messages     Message[]
+  sessions     Session[]
+  
+  @@map("agents")
+}
+
+model Visitor {
+  id          String    @id @default(cuid())
+  visitorId   String    @unique @default(cuid())
+  name        String?
+  email       String?
+  ip          String?
+  userAgent   String?
+  isActive    Boolean   @default(true)
+  isOnline    Boolean   @default(false)
+  lastSeenAt  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  chats       Chat[]
+  messages    Message[]
+  sessions    Session[]
+  
+  @@map("visitors")
+}
+
+model Chat {
+  id          String    @id @default(cuid())
+  chatId      String    @unique @default(cuid())
+  slug        String?
+  status      String    @default("open")
+  subject     String?
+  metadata    String?
+  closedAt    DateTime?
+  closedBy    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  agentId     String?
+  visitorId   String
+  
+  agent       Agent?     @relation(fields: [agentId], references: [id])
+  visitor     Visitor    @relation(fields: [visitorId], references: [id])
+  messages    Message[]
+  
+  @@map("chats")
+}
+
+model Message {
+  id          String    @id @default(cuid())
+  messageId   String    @unique @default(cuid())
+  content     String
+  messageType String    @default("text")
+  senderType  String
+  isRead      Boolean   @default(false)
+  isDelivered Boolean   @default(false)
+  metadata    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  chatId      String
+  senderId    String
+  
+  chat        Chat      @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  attachments Attachment[]
+  
+  @@map("messages")
+}
+
+model Attachment {
+  id           String    @id @default(cuid())
+  attachmentId String    @unique @default(cuid())
+  originalName String
+  filename     String
+  mimeType     String
+  size         Int
+  url          String
+  path         String
+  isProcessed  Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  
+  messageId    String
+  
+  message      Message   @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  
+  @@map("attachments")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionId    String   @unique @default(cuid())
+  refreshToken String
+  expiresAt    DateTime
+  ip           String?
+  userAgent    String?
+  createdAt    DateTime @default(now())
+  
+  agentId      String?
+  visitorId    String?
+  
+  agent        Agent?    @relation(fields: [agentId], references: [id])
+  visitor      Visitor?  @relation(fields: [visitorId], references: [id])
+  
+  @@map("sessions")
+}
