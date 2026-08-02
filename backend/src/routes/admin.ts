@@ -89,7 +89,7 @@ router.get('/chats', authMiddleware, requireRole('admin', 'super_admin'), async 
       orderBy: { updatedAt: 'desc' }
     })
     
-    const formattedChats = chats.map(chat => ({
+    const formattedChats = chats.map((chat: any) => ({
       ...chat,
       lastMessage: chat.messages[0] || null
     }))
