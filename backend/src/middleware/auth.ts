@@ -1,4 +1,4 @@
-import { Response, NextFunction } from 'express'
+import { Response, NextFunction, Request } from 'express'
 import { verifyAccessToken } from '../utils/auth.js'
 import prisma from '../config/database.js'
 
@@ -11,7 +11,7 @@ export interface AuthRequest extends Request {
 }
 
 export async function authMiddleware(
-  req: AuthRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ) {
@@ -35,7 +35,7 @@ export async function authMiddleware(
       return res.status(401).json({ error: 'Unauthorized' })
     }
     
-    req.agent = {
+    (req as AuthRequest).agent = {
       id: agent.id,
       email: agent.email,
       role: agent.role
@@ -48,12 +48,13 @@ export async function authMiddleware(
 }
 
 export function requireRole(...roles: string[]) {
-  return (req: AuthRequest, res: Response, next: NextFunction) => {
-    if (!req.agent) {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const authReq = req as AuthRequest
+    if (!authReq.agent) {
       return res.status(401).json({ error: 'Unauthorized' })
     }
     
-    if (!roles.includes(req.agent.role)) {
+    if (!roles.includes(authReq.agent.role)) {
       return res.status(403).json({ error: 'Forbidden' })
     }
     
