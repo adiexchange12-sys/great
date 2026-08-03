@@ -33,7 +33,7 @@ router.post('/', async (req, res) => {
     res.status(201).json(visitor)
   } catch (error) {
     console.error('Create visitor error:', error instanceof Error ? error.message : String(error))
-    res.status(500).json({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) })
+    res.status(500).json({ error: 'Internal server error' })
   }
 })
 
