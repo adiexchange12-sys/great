@@ -38,18 +38,6 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
 })
 
-app.get('/debug/agents', async (req, res) => {
-  try {
-    const count = await prisma.agent.count()
-    const agents = await prisma.agent.findMany({
-      select: { id: true, email: true, name: true, role: true, isActive: true, password: true, createdAt: true }
-    })
-    res.json({ count, agents })
-  } catch (error) {
-    res.status(500).json({ error: 'Database error', details: error instanceof Error ? error.message : String(error) })
-  }
-})
-
 const server = createServer(app)
 
 setupWebSocket(server)
