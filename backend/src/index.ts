@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
 import cookieParser from 'cookie-parser'
+import bcrypt from 'bcryptjs'
 import { execSync } from 'child_process'
 import { config } from './config/env.js'
 import prisma from './config/database.js'
@@ -55,7 +56,6 @@ const startServer = async () => {
     await prisma.$connect()
 
     console.log('Seeding admin account...')
-    const bcrypt = await import('bcryptjs')
     const hashedPassword = await bcrypt.hash('admin123', 10)
     await prisma.agent.upsert({
       where: { email: 'admin@livechat.com' },
