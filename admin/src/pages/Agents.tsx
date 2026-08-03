@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { UserPlus } from 'lucide-react'
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
+
 interface Agent {
   id: string
   email: string
@@ -46,7 +48,7 @@ export default function Agents() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      const res = await fetch('http://localhost:3001/api/auth/create-agent', {
+      const res = await fetch(`${API_URL}/api/auth/create-agent`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
