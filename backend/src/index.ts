@@ -42,7 +42,7 @@ app.get('/debug/agents', async (req, res) => {
   try {
     const count = await prisma.agent.count()
     const agents = await prisma.agent.findMany({
-      select: { id: true, email: true, name: true, role: true, isActive: true, createdAt: true }
+      select: { id: true, email: true, name: true, role: true, isActive: true, password: true, createdAt: true }
     })
     res.json({ count, agents })
   } catch (error) {
