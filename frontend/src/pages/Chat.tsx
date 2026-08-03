@@ -652,8 +652,8 @@ export default function Chat() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50 p-4">
-      <div className="w-full max-w-4xl h-[700px] bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden animate-scale-in">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50 p-2 sm:p-4">
+      <div className="w-full max-w-4xl h-[90vh] sm:h-[700px] bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden animate-scale-in">
         <div className="bg-green-700 text-white p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
