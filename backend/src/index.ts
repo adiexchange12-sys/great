@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
 import cookieParser from 'cookie-parser'
+import { execSync } from 'child_process'
 import { config } from './config/env.js'
 import prisma from './config/database.js'
 import authRoutes from './routes/auth.js'
@@ -13,6 +14,8 @@ import adminRoutes from './routes/admin.js'
 import chatRoomRoutes from './routes/chat-rooms.js'
 import { setupWebSocket } from './websocket/index.js'
 import { createServer } from 'http'
+import path from 'path'
+import fs from 'fs'
 
 const app = express()
 
@@ -40,6 +43,15 @@ setupWebSocket(server)
 
 const startServer = async () => {
   try {
+    const uploadDir = path.join(process.cwd(), config.uploadDir)
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true })
+    }
+
+    console.log('Pushing database schema...')
+    execSync('npx prisma db push', { stdio: 'inherit' })
+    console.log('Database schema pushed successfully')
+
     await prisma.$connect()
     server.listen(config.port, '0.0.0.0', () => {
       console.log(`Server running on port ${config.port}`)
