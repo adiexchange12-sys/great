@@ -53,6 +53,23 @@ const startServer = async () => {
     console.log('Database schema pushed successfully')
 
     await prisma.$connect()
+
+    console.log('Seeding admin account...')
+    const bcrypt = await import('bcryptjs')
+    const hashedPassword = await bcrypt.hash('admin123', 10)
+    await prisma.agent.upsert({
+      where: { email: 'admin@livechat.com' },
+      update: {},
+      create: {
+        email: 'admin@livechat.com',
+        password: hashedPassword,
+        name: 'Admin',
+        role: 'super_admin',
+        isActive: true
+      }
+    })
+    console.log('Admin account ready')
+
     server.listen(config.port, '0.0.0.0', () => {
       console.log(`Server running on port ${config.port}`)
       console.log(`WebSocket server ready`)
